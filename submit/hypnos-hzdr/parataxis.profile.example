@@ -1,0 +1,70 @@
+. /etc/profile.modules
+module purge
+# Alex' original
+#module load gcc
+module load gcc/4.9.2
+module load cmake/3.3.0
+#module load boost/1.56.0
+module load boost/1.60.0
+#export BOOST_ROOT=/home/grund59/lib/boost1.60
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$BOOST_ROOT/lib
+# Alex' original
+module load cuda/7.5
+#module load cuda/8.0
+# Alex' original
+module load openmpi/1.8.4.kepler.cuda75
+#module load openmpi/1.8.6.kepler.cuda80
+# Alex' original
+module load hdf5-parallel/1.8.14
+#module load hdf5-parallel/1.8.15
+#module load libsplash/1.2.4
+# Alex' own splash
+export SPLASH_ROOT=/home/grund59/lib/splash
+# I'm trying a newer splash version
+#module load libsplash/1.6.0
+#module load pngwriter
+export PNGWRITER_ROOT=/home/grund59/Software/pngwriter
+module load libmxml
+module load adios/1.10.0
+
+# Use own python environment!
+#module load python/3.4.3
+
+#module load vampirtrace/5.13-GPU-beta2
+#module load valgrind/3.8.1
+
+module load editor/gedit
+# for client only:
+module load qt/4.8.2
+# for plugin only
+#module load icet/2.1.1  
+#export ICET_DIR=$ICET_ROOT/lib # does not work
+#export CMAKE_PREFIX_PATH=$ICET_ROOT/lib:$CMAKE_PREFIX_PATH
+
+# due to missing zconf.h:
+#export CPLUS_INCLUDE_PATH=$CPLUS_INCLUDE_PATH:/usr/include/x86_64-linux-gnu
+
+# for liveVis
+export CMAKE_PREFIX_PATH=/usr/lib/x86_64-linux-gnu:$CMAKE_PREFIX_PATH
+export RIVLIB_ROOT=/net/cns/projects/HPL/xray/pausch/libs
+export VISLIB_ROOT=$RIVLIB_ROOT
+export THELIB_ROOT=$RIVLIB_ROOT
+export TIFFWRITER_ROOT=/home/grund59/halt/src/
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$RIVLIB_ROOT/lib:$PNGWRITER_ROOT/lib
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HDF5_ROOT/lib:$CUDA_ROOT/lib64:$SPLASH_ROOT/lib:$CUDA_ROOT/extras/CUPTI/lib64:$CUDA_ROOT/extras/CUPTI/lib
+
+# deactivate CUDA cache
+export CUDA_CACHE_DISABLE=1
+
+# For simulation output tagging
+export MY_NAME="Marco Garten"
+
+# streams the PIConGPU compiler error messages into a more readable format
+function makePIC
+{
+  real_make=`which make`
+  cd $HOME/build >/dev/null
+  $real_make $* 2>&1 | $HOME/grcat/usr/bin/grcat conf.gcc
+  cd - >/dev/null
+}
+

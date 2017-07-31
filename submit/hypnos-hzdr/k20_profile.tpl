@@ -35,6 +35,7 @@
 .TBG_mailAddress=${MY_MAIL:-"someone@example.com"}
 .TBG_mailSettings=${MY_MAILNOTIFY:-"n"}
 .TBG_author=${MY_NAME:+--author \"${MY_NAME}\"}
+.TBG_profile=${PARATAXIS_PROFILE:-"~/parataxis.profile"}
 
 # 4 gpus per node if we need more than 4 gpus else same count as TBG_tasks
 .TBG_gpusPerNode=`if [ $TBG_tasks -gt 4 ] ; then echo 4; else echo $TBG_tasks; fi`
@@ -46,20 +47,15 @@
 .TBG_nodes="$(( ( TBG_tasks + TBG_gpusPerNode -1 ) / TBG_gpusPerNode))"
 ## end calculations ##
 
-# overwrite .profile
-.TBG_profileFile=$TBG_profileFile
-profileFile=!TBG_profileFile
-profileFile=${profileFile:-"$HOME/picongpu.profile"}
-
 set -o pipefail
 echo 'Running program...'
 
 cd !TBG_dstPath
 
 export MODULES_NO_OUTPUT=1
-source $profileFile
+source !TBG_profile
 if [ $? -ne 0 ] ; then
-  echo "Error: $profileFile not found!"
+  echo "Error: ParaTAXIS environment profile under \"!TBG_profile\" not found!"
   exit 1
 fi
 unset MODULES_NO_OUTPUT
